@@ -31,7 +31,7 @@ if ($uri[1] !== 'api') {
     exit();
 }
 
-// the user id is, of course, optional and must be a number:
+// the resource id is, of course, optional and must be a number:
 $resourceId = null;
 if (isset($uri[3])) {
     $resourceId = (int) $uri[3];
