@@ -1,0 +1,21 @@
+{
+    "name": "test/autoload",
+    "description": "lala",
+    "require": {
+        "ext-json": "*",
+        "ext-cassandra": "*",
+        "ext-mysqli": "*",
+        "ext-pdo": "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "App\\": "app/"
+        }
+    },
+    "authors": [
+        {
+            "name": "a",
+            "email": "a@a.c"
+        }
+    ]
+}
