@@ -29,7 +29,7 @@ class DBConnector {
     }
 
     /**
-     * @return mysqli
+     * @return \PDO
      */
     public function getConnection()
     {

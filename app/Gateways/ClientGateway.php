@@ -15,7 +15,7 @@ class ClientGateway extends Gateway {
     public function insert(Array $input)
     {
         $statement = "
-            INSERT INTO person 
+            INSERT INTO $this->tableName 
                 (last_name, first_name, birth_day, address, phone_number, email)
             VALUES
                 (:last_name, :first_name, :birth_day, :address, :phone_number, :email);
@@ -40,12 +40,13 @@ class ClientGateway extends Gateway {
     public function update($id, Array $input)
     {
         $statement = "
-            UPDATE person
-            SET 
-                firstname = :firstname,
-                lastname  = :lastname,
-                firstparent_id = :firstparent_id,
-                secondparent_id = :secondparent_id
+            UPDATE $this->tableName SET 
+                last_name = :last_name,
+                first_name  = :first_name,
+                birth_day = :birth_day,
+                address = :address,
+                phone_number = :phone_number,
+                email = :email
             WHERE id = :id;
         ";
 
@@ -53,10 +54,12 @@ class ClientGateway extends Gateway {
             $statement = $this->db->prepare($statement);
             $statement->execute(array(
                 'id' => (int) $id,
-                'firstname' => $input['firstname'],
-                'lastname'  => $input['lastname'],
-                'firstparent_id' => $input['firstparent_id'] ?? null,
-                'secondparent_id' => $input['secondparent_id'] ?? null,
+                'last_name' => $input['lastName'],
+                'first_name'  => $input['firstName'],
+                'birth_day' => $input['birthDay'] ?? null,
+                'address' => $input['address'] ?? null,
+                'phone_number' => $input['phoneNumber'] ?? null,
+                'email' => $input['email'] ?? null,
             ));
             return $statement->rowCount();
         } catch (PDOException $e) {

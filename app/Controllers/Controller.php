@@ -10,7 +10,7 @@ class Controller {
 
     private $gateway;
 
-    public function __construct($requestMethod, $resourceId, $gateway)
+    public function __construct($requestMethod, $resourceId, $gateway = null)
     {
         $this->requestMethod = $requestMethod;
         $this->resourceId = $resourceId;
@@ -65,15 +65,16 @@ class Controller {
 
     private function create(): array {
         $input = (array) json_decode(file_get_contents('php://input'), TRUE);
-        $this->gateway->insert($input);
+        $result = $this->gateway->insert($input);
         $response['status_code_header'] = 'HTTP/1.1 201 Created';
-        $response['body'] = null;
+        $response['body'] = json_encode($result[0]);
         return $response;
     }
 
     private function update($id): array
     {
         $result = $this->gateway->find($id);
+
         if (! $result) {
             return $this->notFoundResponse();
         }
@@ -83,7 +84,10 @@ class Controller {
 //        }
         $this->gateway->update($id, $input);
         $response['status_code_header'] = 'HTTP/1.1 200 OK';
-        $response['body'] = null;
+
+        $updated = $this->gateway->find($id);
+
+        $response['body'] = json_encode($updated[0]);
         return $response;
     }
 
@@ -95,7 +99,7 @@ class Controller {
         }
         $this->gateway->delete($id);
         $response['status_code_header'] = 'HTTP/1.1 200 OK';
-        $response['body'] = null;
+        $response['body'] = json_encode($id);
         return $response;
     }
 
@@ -124,5 +128,13 @@ class Controller {
         $response['status_code_header'] = 'HTTP/1.1 404 Not Found';
         $response['body'] = null;
         return $response;
+    }
+
+    /**
+     * @param mixed|null $gateway
+     */
+    public function setGateway($gateway)
+    {
+        $this->gateway = $gateway;
     }
 }

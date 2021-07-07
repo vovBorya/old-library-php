@@ -6,26 +6,26 @@ namespace App\Gateways;
 
 use PDOException;
 
-class GenreGateway extends Gateway {
-
+class FineGateway extends Gateway {
     public function __construct($db) {
         $this->db = $db;
-        $this->tableName = "genres";
+        $this->tableName = "fines";
     }
 
     public function insert(Array $input)
     {
         $statement = "
             INSERT INTO $this->tableName 
-                (label)
+                (term_days_count, amount)
             VALUES
-                (:label);
+                (:term_days_count, :amount);
         ";
 
         try {
             $statement = $this->db->prepare($statement);
             $statement->execute(array(
-                'label' => $input['label'],
+                'amount' => $input['amount'],
+                'term_days_count' => $input['termDaysCount'],
             ));
 
             $lastAddedQuery = "
@@ -46,7 +46,8 @@ class GenreGateway extends Gateway {
         $statement = "
             UPDATE $this->tableName
             SET 
-                label = :label
+                term_days_count = :term_days_count,
+                amount = :amount
             WHERE id = :id;
         ";
 
@@ -54,7 +55,8 @@ class GenreGateway extends Gateway {
             $statement = $this->db->prepare($statement);
             $statement->execute(array(
                 'id' => (int) $id,
-                'label' => $input['label']
+                'amount' => $input['amount'],
+                'term_days_count' => $input['termDaysCount'],
             ));
             return $statement->rowCount();
         } catch (PDOException $e) {

@@ -5,6 +5,7 @@ require_once("./vendor/autoload.php");
 use App\Controllers\Controller;
 use App\DB\DBConnector;
 use App\Gateways\ClientGateway;
+use App\Gateways\FineGateway;
 use App\Gateways\GenreGateway;
 
 $serverName = "localhost";
@@ -38,23 +39,21 @@ if (isset($uri[3])) {
 
 $requestMethod = $_SERVER["REQUEST_METHOD"];
 
+$controller = new Controller($requestMethod, $resourceId);
+
 switch ($uri[2]) {
     case "clients": {
-        $controller = new Controller(
-            $requestMethod,
-            $resourceId,
-            new ClientGateway($db->getConnection())
-        );
-
-        $controller->processRequest();
+        $controller->setGateway(new ClientGateway($db->getConnection()));
+        break;
     }
     case "genres": {
-        $controller = new Controller(
-            $requestMethod,
-            $resourceId,
-            new GenreGateway($db->getConnection())
-        );
-
-        $controller->processRequest();
+        $controller->setGateway(new GenreGateway($db->getConnection()));
+        break;
+    }
+    case "fines": {
+        $controller->setGateway(new FineGateway($db->getConnection()));
+        break;
     }
 }
+
+$controller->processRequest();
